@@ -858,10 +858,9 @@ local Library do
     end
 
     Library.SaveConfig = function(self, Config)
-        if isfile(Library.Folders.Directory .. "/" .. Library.Folders.Configs .. "/" .. Config .. ".json") then
-            writefile(Library.Folders.Directory .. "/" .. Library.Folders.Configs .. "/" .. Config .. ".json", Library:GetConfig())
-            Library:Notification("Saved config " .. Config .. ".json", 5, Color3.fromRGB(0, 255, 0))
-        end
+        local Path = Library.Folders.Directory .. "/" .. Library.Folders.Configs .. "/" .. Config .. ".json"
+        writefile(Path, Library:GetConfig())
+        Library:Notification("Saved config " .. Config .. ".json", 5, Color3.fromRGB(0, 255, 0))
     end
 
     Library.RefreshConfigsList = function(self, Element)
@@ -1824,9 +1823,9 @@ local Library do
             end
         end)
 
-        if Data.Default then 
-            Colorpicker:Set(Data.Default, Data.Alpha)
-        end
+        -- Always call Set so Library.Flags[flag] is populated from creation,
+        -- even if no Default was provided. Guarantees GetConfig sees every colorpicker.
+        Colorpicker:Set(Data.Default or Color3.fromRGB(255, 255, 255), Data.Alpha)
 
         Library.SetFlags[Data.Flag] = function(Color, Alpha)
             Colorpicker:Set(Color, Alpha)
@@ -4447,7 +4446,8 @@ local Library do
             Colorpicker.Count = Label.Count
 
             local Extension = Library:CreateColorpicker(Colorpicker)
-            
+            Library.Flags[Colorpicker.Flag] = Extension
+
             return Colorpicker, Extension
         end
 
