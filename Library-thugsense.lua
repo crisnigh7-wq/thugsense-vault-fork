@@ -329,13 +329,13 @@ local Library do
     }
 
     -- Files 
-    for _, FileName in Library.Folders do
+    for _, FileName in pairs(Library.Folders) do
         if not isfolder(FileName) then
             makefolder(FileName)
         end
     end
 
-    for _, ImageData in Library.Images do
+    for _, ImageData in pairs(Library.Images) do
         local ImageName = ImageData[1]
         local ImageLink = ImageData[2]
         
@@ -411,7 +411,7 @@ local Library do
 
             setmetatable(NewItem, Instances)
 
-            for Property, Value in NewItem.Properties do
+            for Property, Value in pairs(NewItem.Properties) do
                 NewItem.Instance[Property] = Value
             end
 
@@ -715,11 +715,11 @@ local Library do
     end
 
     Library.Unload = function(self)
-        for Index, Value in self.Connections do 
+        for Index, Value in pairs(self.Connections) do 
             Value.Connection:Disconnect()
         end
 
-        for Index, Value in self.Threads do 
+        for Index, Value in pairs(self.Threads) do 
             coroutine.close(Value)
         end
 
@@ -775,7 +775,7 @@ local Library do
     end
 
     Library.Disconnect = function(self, Name)
-        for _, Connection in self.Connections do 
+        for _, Connection in pairs(self.Connections) do 
             if Connection.Name == Name then
                 Connection.Connection:Disconnect()
                 break
@@ -796,7 +796,7 @@ local Library do
             Properties = Properties,
         }
 
-        for Property, Value in ThemeData.Properties do
+        for Property, Value in pairs(ThemeData.Properties) do
             if type(Value) == "string" then
                 Item[Property] = self.Theme[Value]
             end
@@ -810,7 +810,7 @@ local Library do
         local Config = { } 
 
         local Success, Result = Library:SafeCall(function()
-            for Index, Value in Library.Flags do 
+            for Index, Value in pairs(Library.Flags) do 
                 if type(Value) == "table" and Value.Key then
                     Config[Index] = {Key = tostring(Value.Key), Mode = Value.Mode}
                 elseif type(Value) == "table" and Value.Color then
@@ -828,7 +828,7 @@ local Library do
         local Decoded = HttpService:JSONDecode(Config)
 
         local Success, Result = Library:SafeCall(function()
-            for Index, Value in Decoded do 
+            for Index, Value in pairs(Decoded) do 
                 local SetFunction = Library.SetFlags[Index]
 
                 if not SetFunction then
@@ -870,7 +870,7 @@ local Library do
 
         local ConfigFolderName = StringGSub(Library.Folders.Configs, Library.Folders.Directory .. "/", "")
 
-        for Index, Value in listfiles(Library.Folders.Configs) do
+        for Index, Value in pairs(listfiles(Library.Folders.Configs)) do
             local FileName = StringGSub(Value, Library.Folders.Directory .. "\\" .. ConfigFolderName .. "\\", "")
             List[Index] = FileName
         end
@@ -904,8 +904,8 @@ local Library do
     Library.ChangeTheme = function(self, Theme, Color)
         self.Theme[Theme] = Color
 
-        for _, Item in self.ThemeItems do
-            for Property, Value in Item.Properties do
+        for _, Item in pairs(self.ThemeItems) do
+            for Property, Value in pairs(Item.Properties) do
                 if type(Value) == "string" and Value == Theme then
                     Item.Item[Property] = Color
                 end
@@ -1090,7 +1090,7 @@ local Library do
 
         Items["Notification"].Instance.BackgroundTransparency = 1
         Items["Notification"].Instance.Size = UDim2New(0, 0, 0, 0)
-        for Index, Value in Items["Notification"].Instance:GetDescendants() do
+        for Index, Value in pairs(Items["Notification"].Instance:GetDescendants()) do
             if Value:IsA("UIStroke") then 
                 Value.Transparency = 1
             elseif Value:IsA("TextLabel") then 
@@ -1107,7 +1107,7 @@ local Library do
             
             task.wait(0.06)
 
-            for Index, Value in Items["Notification"].Instance:GetDescendants() do
+            for Index, Value in pairs(Items["Notification"].Instance:GetDescendants()) do
                 if Value:IsA("UIStroke") then
                     Tween:Create(Value, nil, {Transparency = 0}, true)
                 elseif Value:IsA("TextLabel") then
@@ -1120,7 +1120,7 @@ local Library do
             end
 
             task.delay(Duration + 0.1, function()
-                for Index, Value in Items["Notification"].Instance:GetDescendants() do
+                for Index, Value in pairs(Items["Notification"].Instance:GetDescendants()) do
                     if Value:IsA("UIStroke") then
                         Tween:Create(Value, nil, {Transparency = 1}, true)
                     elseif Value:IsA("TextLabel") then
@@ -1615,7 +1615,7 @@ local Library do
             TableInsert(Descendants, Items["ColorpickerWindow"].Instance)
 
             local NewTween
-            for Index, Value in Descendants do 
+            for Index, Value in pairs(Descendants) do 
                 local ValueIndex = Library:GetTransparencyPropertyFromItem(Value)
 
                 if not ValueIndex then 
@@ -1627,7 +1627,7 @@ local Library do
                 end
 
                 if type(ValueIndex) == "table" then
-                    for _, Property in ValueIndex do 
+                    for _, Property in pairs(ValueIndex) do 
                         NewTween = Library:FadeItem(Value, Property, Bool, Data.FadeSpeed)
                     end
                 else
@@ -2032,7 +2032,7 @@ local Library do
 
                 task.wait(0.1)
 
-                for Index, Value in Items["Window"].Instance:GetDescendants() do 
+                for Index, Value in pairs(Items["Window"].Instance:GetDescendants()) do 
                     if Value:IsA("UIStroke") then
                         Tween:Create(Value, nil, {Transparency = 0}, true)
                     elseif Value:IsA("TextButton") then
@@ -2041,7 +2041,7 @@ local Library do
                     end
                 end
             else 
-                for Index, Value in Items["Window"].Instance:GetDescendants() do 
+                for Index, Value in pairs(Items["Window"].Instance:GetDescendants()) do 
                     if Value:IsA("UIStroke") then
                         Tween:Create(Value, nil, {Transparency = 1}, true)
                     elseif Value:IsA("TextButton") then
@@ -2117,7 +2117,7 @@ local Library do
         end
 
         function Keybind:SetMode(Mode)
-            for Index, Value in Modes do 
+            for Index, Value in pairs(Modes) do 
                 if Index == Mode then 
                     Value:Tween(nil, {TextColor3 = Library.Theme.Accent})
                     Value:ChangeItemTheme({TextColor3 = "Accent"})
@@ -2392,7 +2392,7 @@ local Library do
             TableInsert(Descendants, Items["MainFrame"].Instance)
 
             local NewTween
-            for Index, Value in Descendants do 
+            for Index, Value in pairs(Descendants) do 
                 local ValueIndex = Library:GetTransparencyPropertyFromItem(Value)
 
                 if not ValueIndex then 
@@ -2400,7 +2400,7 @@ local Library do
                 end
 
                 if type(ValueIndex) == "table" then
-                    for _, Property in ValueIndex do 
+                    for _, Property in pairs(ValueIndex) do 
                         NewTween = Library:FadeItem(Value, Property, Bool, Window.FadeSpeed)
                     end
                 else
@@ -2644,7 +2644,7 @@ local Library do
             TableInsert(Descendants, Items["Page"].Instance)
 
             local NewTween
-            for Index, Value in Descendants do 
+            for Index, Value in pairs(Descendants) do 
                 local ValueIndex = Library:GetTransparencyPropertyFromItem(Value)
 
                 if not ValueIndex then 
@@ -2652,7 +2652,7 @@ local Library do
                 end
 
                 if type(ValueIndex) == "table" then
-                    for _, Property in ValueIndex do 
+                    for _, Property in pairs(ValueIndex) do 
                         NewTween = Library:FadeItem(Value, Property, Bool, Page.Window.FadeSpeed or 0.5)
                     end
                 else
@@ -2667,7 +2667,7 @@ local Library do
         end
 
         Items["Inactive"]:Connect("MouseButton1Down", function()
-            for Index, Value in Page.Window.Pages do
+            for Index, Value in pairs(Page.Window.Pages) do
                 Value:Turn(Value == Page)
             end
         end)
@@ -2875,7 +2875,7 @@ local Library do
             TableInsert(Descendants, Items["Subtab"].Instance)
 
             local NewTween
-            for Index, Value in Descendants do 
+            for Index, Value in pairs(Descendants) do 
                 local ValueIndex = Library:GetTransparencyPropertyFromItem(Value)
 
                 if not ValueIndex then 
@@ -2883,7 +2883,7 @@ local Library do
                 end
 
                 if type(ValueIndex) == "table" then
-                    for _, Property in ValueIndex do 
+                    for _, Property in pairs(ValueIndex) do 
                         NewTween = Library:FadeItem(Value, Property, Bool, SubPage.Window.FadeSpeed or 0.5)
                     end
                 else
@@ -2898,7 +2898,7 @@ local Library do
         end
 
         Items["Inactive"]:Connect("MouseButton1Down", function()
-            for Index, Value in SubPage.Window.SubPages do
+            for Index, Value in pairs(SubPage.Window.SubPages) do
                 Value:Turn(Value == SubPage)
             end
         end)
@@ -3091,7 +3091,7 @@ local Library do
             }) 
         end
 
-        for Index, Value in MultiSection.Sections do 
+        for Index, Value in pairs(MultiSection.Sections) do 
             local NewSection = {
                 Window = MultiSection.Window,
                 Page = MultiSection.Page,
@@ -3236,7 +3236,7 @@ local Library do
                 TableInsert(Descendants, SubItems["Content"].Instance)
 
                 local NewTween
-                for Index, Value in Descendants do 
+                for Index, Value in pairs(Descendants) do 
                     local ValueIndex = Library:GetTransparencyPropertyFromItem(Value)
 
                     if not ValueIndex then 
@@ -3244,7 +3244,7 @@ local Library do
                     end
 
                     if type(ValueIndex) == "table" then
-                        for _, Property in ValueIndex do 
+                        for _, Property in pairs(ValueIndex) do 
                             NewTween = Library:FadeItem(Value, Property, Bool, MultiSection.Window.FadeSpeed or 0.5)
                         end
                     else
@@ -3259,7 +3259,7 @@ local Library do
             end
 
             SubItems["Inactive"]:Connect("MouseButton1Down", function()
-                for Index, Value in MultiSection.SectionContents do
+                for Index, Value in pairs(MultiSection.SectionContents) do
                     Value:Turn(Value == NewSection)
                 end
             end)
@@ -4125,7 +4125,7 @@ local Library do
 
                 Dropdown.Value = Option
 
-                for Index, Value in Option do 
+                for Index, Value in pairs(Option) do 
                     local OptionData = Dropdown.Options[Value]
                     
                     if not OptionData then 
@@ -4151,7 +4151,7 @@ local Library do
                 OptionData.Selected = true
                 OptionData:Toggle("Active")
 
-                for Index, Value in Dropdown.Options do 
+                for Index, Value in pairs(Dropdown.Options) do 
                     if Value ~= OptionData then 
                         Value.Selected = false
                         Value:Toggle("Inactive")
@@ -4264,7 +4264,7 @@ local Library do
                         OptionData:Toggle("Active")
                         Items["Value"].Instance.Text = OptionData.Name
 
-                        for Index, Value in Dropdown.Options do 
+                        for Index, Value in pairs(Dropdown.Options) do 
                             if Value ~= OptionData then 
                                 Value.Selected = false
                                 Value:Toggle("Inactive")
@@ -4298,11 +4298,11 @@ local Library do
         end
 
         function Dropdown:Refresh(List)
-            for Index, Value in Dropdown.Options do 
+            for Index, Value in pairs(Dropdown.Options) do 
                 Dropdown:Remove(Value.Name)
             end
 
-            for Index, Value in List do 
+            for Index, Value in pairs(List) do 
                 Dropdown:Add(Value)
             end
         end
@@ -4332,7 +4332,7 @@ local Library do
             TableInsert(Descendants, Items["OptionHolder"].Instance)
 
             local NewTween
-            for Index, Value in Descendants do 
+            for Index, Value in pairs(Descendants) do 
                 local ValueIndex = Library:GetTransparencyPropertyFromItem(Value)
 
                 if not ValueIndex then 
@@ -4344,7 +4344,7 @@ local Library do
                 end
 
                 if type(ValueIndex) == "table" then
-                    for _, Property in ValueIndex do 
+                    for _, Property in pairs(ValueIndex) do 
                         NewTween = Library:FadeItem(Value, Property, Bool, Dropdown.Window.FadeSpeed)
                     end
                 else
@@ -4359,7 +4359,7 @@ local Library do
             end)
         end
 
-        for Index, Value in Dropdown.Items do 
+        for Index, Value in pairs(Dropdown.Items) do 
             Dropdown:Add(Value)
         end
 
@@ -4713,7 +4713,7 @@ local Library do
 
                 Library.Flags[Listbox.Flag] = Listbox.Value
 
-                for Index, Value in Option do 
+                for Index, Value in pairs(Option) do 
                     local OptionData = Listbox.Options[Value]
                     
                     if not OptionData then 
@@ -4737,7 +4737,7 @@ local Library do
                 OptionData.Selected = true
                 OptionData:Toggle("Active")
 
-                for Index, Value in Listbox.Options do 
+                for Index, Value in pairs(Listbox.Options) do 
                     if Value ~= OptionData then 
                         Value.Selected = false
                         Value:Toggle("Inactive")
@@ -4765,11 +4765,11 @@ local Library do
         end
 
         function Listbox:Refresh(List)
-            for Index, Value in Listbox.Options do 
+            for Index, Value in pairs(Listbox.Options) do 
                 Listbox:Remove(Value.Name)
             end
 
-            for Index, Value in List do 
+            for Index, Value in pairs(List) do 
                 Listbox:Add(Value)
             end
         end
@@ -4855,7 +4855,7 @@ local Library do
 
                         OptionData:Toggle("Active")
 
-                        for Index, Value in Listbox.Options do 
+                        for Index, Value in pairs(Listbox.Options) do 
                             if Value ~= OptionData then 
                                 Value.Selected = false
                                 Value:Toggle("Inactive")
@@ -4881,7 +4881,7 @@ local Library do
             return OptionData
         end
 
-        for Index, Value in Listbox.Items do 
+        for Index, Value in pairs(Listbox.Items) do 
             Listbox:Add(Value)
         end
 
